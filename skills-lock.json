@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "microservices-patterns": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "ad3f082b4d343294249d4407f1019d98004d659c5d1b4a1bd5feb5ee0378589e"
+    }
+  }
+}
