@@ -6,6 +6,7 @@ import com.xoslu.tech.operationservice.entity.Operation;
 import com.xoslu.tech.operationservice.enums.TypeOperation;
 import com.xoslu.tech.operationservice.feign.AccountClient;
 import com.xoslu.tech.operationservice.repository.OperationRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class OperationService {
     private final OperationRepository operationRepository;
     private final AccountClient accountClient;
 
+    @Transactional
     public OperationDTO deposit(Operation operation) {
         AccountDTO accountDTO = accountClient.getAccount(operation.getAccountNumber());
         operation.setType(TypeOperation.DEPOSIT);
@@ -28,9 +30,12 @@ public class OperationService {
         operation.setCreatedAt(Instant.now());
         operation.setAccountNumber(accountDTO.getNumero());
         operationRepository.save(operation);
+        accountDTO.setBalance(accountDTO.getBalance() + operation.getAmount());
+        accountClient.updateAccountBalance(accountDTO.getNumero(), accountDTO.getBalance());
         return toDTO(operation);
     }
 
+    @Transactional
     public OperationDTO withdraw(Operation operation) throws BadRequestException {
         AccountDTO accountDTO = accountClient.getAccount(operation.getAccountNumber());
         if (operation.getAmount() > accountDTO.getBalance())
@@ -40,6 +45,8 @@ public class OperationService {
         operation.setCreatedAt(Instant.now());
         operation.setAccountNumber(accountDTO.getNumero());
         operationRepository.save(operation);
+        accountDTO.setBalance(accountDTO.getBalance() - operation.getAmount());
+        accountClient.updateAccountBalance(accountDTO.getNumero(), accountDTO.getBalance());
         return toDTO(operation);
     }
 

@@ -33,4 +33,9 @@ public class AccountController {
     public AccountDTO getAccountByNumero(@PathVariable String numero) {
         return accountService.getAccountByNumero(numero);
     }
+
+    @PutMapping("/update-balance/{numero}")
+    public AccountDTO updateAccountBalance(@PathVariable String numero, @RequestParam("new-balance") double newBalance) {
+        return accountService.updateBalanceAccount(numero, newBalance);
+    }
 }

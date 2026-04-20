@@ -8,6 +8,7 @@ import com.xoslu.tech.accountservice.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,5 +66,13 @@ public class AccountService {
             dtos.add(toDTO(account));
         }
         return dtos;
+    }
+
+    public AccountDTO updateBalanceAccount(String accountNumber, double balance) {
+        Account account = accountRepository.findByNumero(accountNumber).orElse(null);
+        assert account != null;
+        account.setBalance(balance);
+        accountRepository.save(account);
+        return toDTO(account);
     }
 }
