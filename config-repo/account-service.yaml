@@ -15,6 +15,18 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: account-service-group
+      auto-affset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.xoslu.tech.*"
+        spring.json.use.type.headers: false
+        spring.json.value.default.type: com.xoslu.tech.accountservice.kafka.events.CustomerCreatedEvent
+
 server:
   port: 8082
 

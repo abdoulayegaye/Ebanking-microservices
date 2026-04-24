@@ -4,6 +4,7 @@ import com.xoslu.tech.accountservice.dto.AccountDTO;
 import com.xoslu.tech.accountservice.dto.CustomerDTO;
 import com.xoslu.tech.accountservice.entity.Account;
 import com.xoslu.tech.accountservice.feign.CustomerClient;
+import com.xoslu.tech.accountservice.kafka.events.CustomerCreatedEvent;
 import com.xoslu.tech.accountservice.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,21 @@ public class AccountService {
         account.setUpdatedAt(Instant.now());
         accountRepository.save(account);
         return toDTO(account);
+    }
+
+    public AccountDTO createAccountKafka(CustomerCreatedEvent event) {
+        Account acc = accountRepository.save(
+                Account.builder()
+                        .customerId(event.id())
+                        .currency("XOF")
+                        .active(Boolean.TRUE)
+                        .balance(10000)
+                        .numero(UUID.randomUUID().toString())
+                        .createdAt(Instant.now())
+                        .updatedAt(Instant.now())
+                        .build()
+        );
+        return toDTO(acc);
     }
 
     public AccountDTO getAccountById(Long id) {
