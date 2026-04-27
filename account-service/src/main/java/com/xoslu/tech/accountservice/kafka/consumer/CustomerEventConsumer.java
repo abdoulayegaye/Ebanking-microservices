@@ -23,7 +23,7 @@ public class CustomerEventConsumer {
     public void handleCustomerCreatedEvent(CustomerCreatedEvent event,
                                            @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
                                            @Header(KafkaHeaders.OFFSET) long offset) {
-        log.info("CustomerCreatedEvent recu -> customerId: {}, partition: {}, offset: {}", event.id(), partition, offset);
+        log.info("CustomerCreatedEvent reçu -> customerId: {}, partition: {}, offset: {}", event.id(), partition, offset);
         try{
             accountService.createAccountKafka(event);
         }catch (Exception e){
